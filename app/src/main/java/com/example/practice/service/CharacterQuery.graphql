@@ -1,0 +1,10 @@
+query CharacterQuery($search: String!){
+    characters(filter: { name: $search }) {
+        info {
+            count
+        }
+        results {
+            name
+        }
+    }
+}
