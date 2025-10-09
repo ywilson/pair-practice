@@ -16,5 +16,4 @@ class CharactersViewModel @Inject constructor(private val characterRepository: C
     fun refreshCharacters() = viewModelScope.launch(Dispatchers.IO) {
         _characterFlow.value = characterRepository.getCharacters("")
     }
-
 }
