@@ -2,8 +2,10 @@ package com.example.practice.service
 
 import com.apollographql.apollo.ApolloClient
 import com.example.practice.CharacterQuery
+import javax.inject.Singleton
 
 
+@Singleton
 class RickMortyService(private val serverUrl: String = "https://rickandmortyapi.com/graphql") {
     private val apolloClient = ApolloClient.Builder().serverUrl(serverUrl).build()
 

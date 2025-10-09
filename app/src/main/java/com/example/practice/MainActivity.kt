@@ -13,11 +13,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
+import com.example.practice.repository.CharacterRepository
 import com.example.practice.service.RickMortyService
 import com.example.practice.ui.theme.PracticeTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,8 +37,9 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+
+
         lifecycleScope.launch(Dispatchers.IO) {
-            println(RickMortyService().getCharacters(""))
             RickMortyService().getCharacters("").forEach {
             result -> result?.let { Log.d("Character-Dump", it.name!!) } }}
     }
