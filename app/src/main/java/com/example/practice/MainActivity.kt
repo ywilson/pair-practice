@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
+import com.example.practice.DI.PersistenceModule
 import com.example.practice.repository.CharacterRepository
 import com.example.practice.service.RickMortyService
 import com.example.practice.ui.theme.PracticeTheme
@@ -23,6 +24,9 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit var characterRepository: CharacterRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -40,7 +44,7 @@ class MainActivity : ComponentActivity() {
 
 
         lifecycleScope.launch(Dispatchers.IO) {
-            RickMortyService().getCharacters("").forEach {
+           characterRepository.getCharacters("").forEach {
             result -> result?.let { Log.d("Character-Dump", it.name!!) } }}
     }
 }

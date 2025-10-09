@@ -1,6 +1,5 @@
 package com.example.practice.DI
 
-import com.example.practice.MainActivity
 import com.example.practice.repository.CharacterRepository
 import com.example.practice.repository.CharacterRepositoryImpl
 import dagger.Binds
@@ -13,5 +12,5 @@ import dagger.hilt.components.SingletonComponent
 abstract class PersistenceModule {
 
     @Binds
-    abstract fun bindCharacterRepository(characterRepositoryImpl: CharacterRepositoryImpl) : CharacterRepository
+    abstract fun provideCharacterRepository(characterRepositoryImpl: CharacterRepositoryImpl) : CharacterRepository
 }

@@ -2,12 +2,22 @@ package com.example.practice.service
 
 import com.apollographql.apollo.ApolloClient
 import com.example.practice.CharacterQuery
+import javax.inject.Inject
 import javax.inject.Singleton
 
 
 @Singleton
-class RickMortyService(private val serverUrl: String = "https://rickandmortyapi.com/graphql") {
-    private val apolloClient = ApolloClient.Builder().serverUrl(serverUrl).build()
+class RickMortyService  {
+
+    var apolloClient : ApolloClient
+
+    @Inject constructor(){
+        apolloClient = ApolloClient.Builder().serverUrl(SERVER_URL).build()
+    }
+
+    constructor(serverUrl : String) {
+        apolloClient = ApolloClient.Builder().serverUrl(serverUrl).build()
+    }
 
     suspend fun getCharacters(nameSearch: String) : List<CharacterQuery.Result?> {
 
@@ -22,5 +32,10 @@ class RickMortyService(private val serverUrl: String = "https://rickandmortyapi.
         }
 
         return emptyList()
+    }
+
+    companion object
+    {
+        const val SERVER_URL = "https://rickandmortyapi.com/graphql"
     }
 }

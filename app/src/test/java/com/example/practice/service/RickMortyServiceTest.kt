@@ -40,7 +40,7 @@ class RickMortyServiceTest
 
         val rickMortyService = RickMortyService(mockServer.url() )
 
-        val actualResponse = rickMortyService.getCharacters("mom")
+        val actualResponse = rickMortyService.getCharacters("")
 
         assertEquals(expectedCharactersData.characters?.results, actualResponse)
     }
