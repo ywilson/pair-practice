@@ -1,57 +1,48 @@
 package com.example.practice
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.lifecycleScope
-import com.example.practice.DI.PersistenceModule
-import com.example.practice.repository.CharacterRepository
-import com.example.practice.service.RickMortyService
+import com.example.practice.characters.CharactersViewModel
 import com.example.practice.ui.theme.PracticeTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import javax.inject.Inject
+import com.example.practice.characters.Character
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val charactersViewModel: CharactersViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val characterList = charactersViewModel.characterFlow.collectAsState()
             PracticeTheme(darkTheme = true) {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                Scaffold(modifier = Modifier.fillMaxSize()) {
+                    CharacterList(characterList.value)
                 }
             }
         }
+
+        charactersViewModel.refreshCharacters()
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    PracticeTheme {
-        Greeting("Android")
+fun CharacterList(characters: List<Character>) {
+    LazyColumn {
+        items(characters.size) {
+            Text(text = characters[it].name)
+        }
     }
 }
