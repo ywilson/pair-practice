@@ -24,9 +24,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @Inject
-    lateinit var characterRepository: CharacterRepository
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -40,12 +37,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
-
-
-        lifecycleScope.launch(Dispatchers.IO) {
-           characterRepository.getCharacters("").forEach {
-            result -> result?.let { Log.d("Character-Dump", it.name!!) } }}
     }
 }
 

@@ -1,6 +1,7 @@
 package com.example.practice.repository
 
 import com.example.practice.CharacterQuery
+import com.example.practice.characters.Character
 import com.example.practice.service.RickMortyService
 import com.example.practice.type.buildCharacter
 import com.example.practice.type.buildCharacters
@@ -24,7 +25,7 @@ class CharacterRepositoryTest {
 
     @Test
     fun `when getCharactersCalled, return characters from R&Mapi`() = runTest {
-        val expectedCharactersData = CharacterQuery.Data {
+        val testCharactersData = CharacterQuery.Data {
             characters = buildCharacters {
                 results = listOf(
                     buildCharacter {
@@ -43,12 +44,28 @@ class CharacterRepositoryTest {
             }
         }
 
+        val expectedCharacters = listOf(
+            Character(
+                name = "mom",
+                image = "wave.png"
+            ),
+            Character(
+                name = "test",
+                image = "wave3.png"
+            ),
+            Character(
+                name = "dad",
+                image = "clap.png"
+            )
+        )
+
         whenever(rickMortyService.getCharacters("")).thenReturn(
-            expectedCharactersData.characters?.results)
+            testCharactersData.characters?.results
+        )
 
         val actualCharacters = characterRepositoryImpl.getCharacters("")
 
         verify(rickMortyService).getCharacters("")
-        assertEquals(expectedCharactersData.characters?.results, actualCharacters)
+        assertEquals(expectedCharacters, actualCharacters)
     }
 }
