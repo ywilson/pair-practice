@@ -20,8 +20,10 @@ class RickMortyService  {
     }
 
     suspend fun getCharacters(nameSearch: String) : RickMortyQLResponse {
-
         val response = apolloClient.query(CharacterQuery(nameSearch)).execute()
+
+        if (response.exception != null)
+            return RickMortyQLResponse.Error("Unknown error occurred")
 
         response.data?.also { data ->
             data.characters?.also {characters ->
@@ -31,7 +33,7 @@ class RickMortyService  {
             }
         }
 
-        return RickMortyQLResponse.Error("error")
+        return RickMortyQLResponse.Error("Unknown error occurred")
     }
 
     companion object

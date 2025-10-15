@@ -15,13 +15,17 @@ import org.junit.Test
 class RickMortyServiceTest
 {
     lateinit var mockServer : MockServer
+
+    lateinit var rickMortyService: RickMortyService
+
     @Before
-    fun setUp() {
+    fun setUp() = runTest{
         mockServer = MockServer()
+        rickMortyService = RickMortyService(mockServer.url() )
     }
 
     @Test
-    fun `when getCharacters call, then return list of Characters`() = runTest {
+    fun `when getCharacters call success, then return list of Characters`() = runTest {
         val expectedCharactersData = CharacterQuery.Data{
             characters = buildCharacters {
             results = listOf(
@@ -40,7 +44,20 @@ class RickMortyServiceTest
 
         mockServer.enqueue(mockResponseBuilder.build())
 
-        val rickMortyService = RickMortyService(mockServer.url() )
+        val actualResponse = rickMortyService.getCharacters("")
+
+        assertEquals(expectedResponse, actualResponse)
+    }
+
+    @Test
+    fun `when getCharacters call error, then return error`() = runTest {
+        val expectedResponse = RickMortyQLResponse.Error("Unknown error occurred")
+
+        val mockResponseBuilder = MockResponse.Builder()
+        mockResponseBuilder.body("")
+        mockResponseBuilder.statusCode(404)
+
+        mockServer.enqueue(mockResponseBuilder.build())
 
         val actualResponse = rickMortyService.getCharacters("")
 
