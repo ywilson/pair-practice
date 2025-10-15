@@ -18,7 +18,7 @@ class CharacterRepositoryImpl @Inject constructor(private val rickMortyService: 
     override suspend fun getCharacters(nameFilter: String): CharacterData {
         return when (val response = rickMortyService.getCharacters("")) {
             is RickMortyQLResponse.Success -> CharacterData.Success(response.characters.map {
-                it?.toCharacter() ?: Character("", "")
+                it?.toCharacter() ?: Character("", "", "")
             })
 
             is RickMortyQLResponse.Error -> {

@@ -33,14 +33,17 @@ class CharacterRepositoryTest {
                     buildCharacter {
                         name = "mom"
                         image = "wave.png"
+                        status = "Alive"
                     },
                     buildCharacter {
                         name = "test"
                         image = "wave3.png"
+                        status = "Alive"
                     },
                     buildCharacter {
                         name = "dad"
                         image = "clap.png"
+                        status = "Dead"
                     }
                 )
             }
@@ -49,15 +52,18 @@ class CharacterRepositoryTest {
         val expectedCharactersData = CharacterData.Success(listOf(
             Character(
                 name = "mom",
-                image = "wave.png"
+                image = "wave.png",
+                status = "Alive"
             ),
             Character(
                 name = "test",
-                image = "wave3.png"
+                image = "wave3.png",
+                status = "Alive"
             ),
             Character(
                 name = "dad",
-                image = "clap.png"
+                image = "clap.png",
+                status = "Dead"
             )
         ))
 

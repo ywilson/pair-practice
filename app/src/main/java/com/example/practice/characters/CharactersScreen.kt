@@ -3,6 +3,7 @@ package com.example.practice.characters
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
@@ -26,9 +27,9 @@ fun CharactersScreen(characterData : CharacterData) {
 
 @Composable
 fun CharacterList(characters: List<Character>) {
-    LazyColumn {
+    LazyColumn(modifier = Modifier.fillMaxWidth()){
         items(characters.size) {
-            Text(text = characters[it].name)
+            CharacterCard(characters[it])
         }
     }
 }
