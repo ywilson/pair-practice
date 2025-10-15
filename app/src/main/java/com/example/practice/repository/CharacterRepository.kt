@@ -22,11 +22,7 @@ class CharacterRepositoryImpl @Inject constructor(private val rickMortyService: 
             })
 
             is RickMortyQLResponse.Error -> {
-                CharacterData.Error("")
-            }
-
-            is RickMortyQLResponse.Loading -> {
-                CharacterData.Loading
+                CharacterData.Error(response.message)
             }
         }
     }

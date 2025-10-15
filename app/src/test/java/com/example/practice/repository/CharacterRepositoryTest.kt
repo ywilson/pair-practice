@@ -26,7 +26,7 @@ class CharacterRepositoryTest {
     lateinit var characterRepositoryImpl: CharacterRepositoryImpl
 
     @Test
-    fun `when getCharactersCalled, return characters from R&Mapi`() = runTest {
+    fun `when getCharactersCalled success, return characters from R&Mapi`() = runTest {
         val testCharactersData = CharacterQuery.Data {
             characters = buildCharacters {
                 results = listOf(
@@ -69,5 +69,19 @@ class CharacterRepositoryTest {
 
         verify(rickMortyService).getCharacters("")
         assertEquals(expectedCharactersData, actualCharacters)
+    }
+
+    @Test
+    fun `when getCharactersCalled error, return error`() = runTest {
+        val expectedError = CharacterData.Error("Unknown error occurred")
+
+        whenever(rickMortyService.getCharacters("")).thenReturn(
+            RickMortyQLResponse.Error("Unknown error occurred")
+        )
+
+        val actualResponse = characterRepositoryImpl.getCharacters("")
+
+        verify(rickMortyService).getCharacters("")
+        assertEquals(expectedError, actualResponse)
     }
 }
