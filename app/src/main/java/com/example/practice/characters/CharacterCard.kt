@@ -1,5 +1,8 @@
 package com.example.practice.characters
 
-class CharacterCard {
+import androidx.compose.runtime.Composable
+
+@Composable
+fun CharacterCard(character: Character) {
 
 }
