@@ -48,7 +48,7 @@ class CharactersViewModelTest {
         verify(mockCharactersRepository).getCharacters("")
 
         val job = launch (UnconfinedTestDispatcher(testScheduler)){charactersViewModel.characterFlow.collect {
-            assertEquals(testCharactersData.characters, it)
+            assertEquals(testCharactersData, it)
         }}
 
          job.cancel()

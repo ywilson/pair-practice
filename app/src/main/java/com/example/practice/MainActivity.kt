@@ -1,5 +1,6 @@
 package com.example.practice
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -7,12 +8,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import com.example.practice.characters.Character
+import com.example.practice.characters.CharacterData
 import com.example.practice.characters.CharactersViewModel
 import com.example.practice.ui.theme.PracticeTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,14 +24,20 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val charactersViewModel: CharactersViewModel by viewModels()
 
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val characterList = charactersViewModel.characterFlow.collectAsState()
+            val characterData = charactersViewModel.characterFlow.collectAsState()
             PracticeTheme(darkTheme = true) {
-                Scaffold(modifier = Modifier.fillMaxSize()) {
-                    CharacterList(characterList.value)
+                Scaffold(modifier = Modifier.fillMaxSize()) { _ ->
+                    when (characterData.value)
+                    {
+                        is CharacterData.Success -> CharacterList((characterData.value as CharacterData.Success).characters)
+                        is CharacterData.Error -> Text(text = (characterData.value as CharacterData.Error).message)
+                        is CharacterData.Loading -> CircularProgressIndicator()
+                    }
                 }
             }
         }

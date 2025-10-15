@@ -4,6 +4,7 @@ import com.example.practice.characters.Character
 import com.example.practice.characters.CharacterData
 import com.example.practice.service.RickMortyQLResponse
 import com.example.practice.service.RickMortyService
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 import javax.inject.Singleton
 

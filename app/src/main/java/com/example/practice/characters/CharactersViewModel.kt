@@ -12,15 +12,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CharactersViewModel @Inject constructor(private val characterRepository: CharacterRepository): ViewModel() {
-    private val _characterFlow = MutableStateFlow<List<Character>>(emptyList())
+    private val _characterFlow = MutableStateFlow<CharacterData>(CharacterData.Loading)
     val characterFlow = _characterFlow.asStateFlow()
     
     fun refreshCharacters() = viewModelScope.launch(Dispatchers.IO) {
-        when (val charData = characterRepository.getCharacters(""))
-        {
-            is CharacterData.Success -> _characterFlow.value = charData.characters
-            is CharacterData.Error -> {}
-            is CharacterData.Loading -> {}
-        }
+        _characterFlow.value = characterRepository.getCharacters("")
     }
 }
