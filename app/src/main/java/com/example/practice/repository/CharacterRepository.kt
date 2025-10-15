@@ -1,6 +1,5 @@
 package com.example.practice.repository
 
-import com.example.practice.CharacterQuery
 import com.example.practice.characters.Character
 import com.example.practice.service.RickMortyService
 import javax.inject.Inject
