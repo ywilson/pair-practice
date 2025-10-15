@@ -1,8 +1,8 @@
 package com.example.practice
 
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import com.example.practice.characters.Character
 import com.example.practice.characters.CharacterCard
@@ -26,5 +26,8 @@ class CharacterCardTest {
             .onNodeWithText(testCharacter.name)
             .assertIsDisplayed()
 
+        composeTestRule
+            .onNodeWithContentDescription("characterImage")
+            .assertIsDisplayed()
     }
 }
