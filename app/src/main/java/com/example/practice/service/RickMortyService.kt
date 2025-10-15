@@ -19,19 +19,19 @@ class RickMortyService  {
         apolloClient = ApolloClient.Builder().serverUrl(serverUrl).build()
     }
 
-    suspend fun getCharacters(nameSearch: String) : List<CharacterQuery.Result?> {
+    suspend fun getCharacters(nameSearch: String) : RickMortyQLResponse {
 
         val response = apolloClient.query(CharacterQuery(nameSearch)).execute()
 
         response.data?.also { data ->
             data.characters?.also {characters ->
                 characters.results?.also {
-                    return it
+                    return RickMortyQLResponse.Success(it)
                 }
             }
         }
 
-        return emptyList()
+        return RickMortyQLResponse.Error("error")
     }
 
     companion object

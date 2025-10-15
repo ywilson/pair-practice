@@ -16,6 +16,11 @@ class CharactersViewModel @Inject constructor(private val characterRepository: C
     val characterFlow = _characterFlow.asStateFlow()
     
     fun refreshCharacters() = viewModelScope.launch(Dispatchers.IO) {
-        _characterFlow.value = characterRepository.getCharacters("")
+        when (val charData = characterRepository.getCharacters(""))
+        {
+            is CharacterData.Success -> _characterFlow.value = charData.characters
+            is CharacterData.Error -> {}
+            is CharacterData.Loading -> {}
+        }
     }
 }

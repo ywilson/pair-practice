@@ -29,7 +29,7 @@ class CharactersViewModelTest {
     @Test
     fun `when refreshCharacters called, then pull characters from repo and inform view`() =
      runTest {
-        val testCharacters = listOf(
+        val testCharactersData = CharacterData.Success(listOf(
             Character(
                 name = "mom",
                 image = "wave.png"
@@ -42,15 +42,15 @@ class CharactersViewModelTest {
                 name = "dad",
                 image = "clap.png"
             )
-        )
-         whenever(mockCharactersRepository.getCharacters("")).thenReturn(testCharacters)
+        ))
+        whenever(mockCharactersRepository.getCharacters("")).thenReturn(testCharactersData)
 
         charactersViewModel.refreshCharacters()
 
         verify(mockCharactersRepository).getCharacters("")
 
         val job = launch (UnconfinedTestDispatcher(testScheduler)){charactersViewModel.characterFlow.collect {
-            assertEquals(testCharacters, it)
+            assertEquals(testCharactersData.characters, it)
         }}
 
          job.cancel()

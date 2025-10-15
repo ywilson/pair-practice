@@ -2,6 +2,8 @@ package com.example.practice.repository
 
 import com.example.practice.CharacterQuery
 import com.example.practice.characters.Character
+import com.example.practice.characters.CharacterData
+import com.example.practice.service.RickMortyQLResponse
 import com.example.practice.service.RickMortyService
 import com.example.practice.type.buildCharacter
 import com.example.practice.type.buildCharacters
@@ -44,7 +46,7 @@ class CharacterRepositoryTest {
             }
         }
 
-        val expectedCharacters = listOf(
+        val expectedCharactersData = CharacterData.Success(listOf(
             Character(
                 name = "mom",
                 image = "wave.png"
@@ -57,15 +59,15 @@ class CharacterRepositoryTest {
                 name = "dad",
                 image = "clap.png"
             )
-        )
+        ))
 
         whenever(rickMortyService.getCharacters("")).thenReturn(
-            testCharactersData.characters?.results
+            RickMortyQLResponse.Success(testCharactersData.characters?.results!!)
         )
 
         val actualCharacters = characterRepositoryImpl.getCharacters("")
 
         verify(rickMortyService).getCharacters("")
-        assertEquals(expectedCharacters, actualCharacters)
+        assertEquals(expectedCharactersData, actualCharacters)
     }
 }

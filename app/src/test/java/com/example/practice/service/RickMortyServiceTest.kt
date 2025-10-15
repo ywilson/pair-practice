@@ -32,6 +32,8 @@ class RickMortyServiceTest
             )
         }}
 
+        val expectedResponse = RickMortyQLResponse.Success(expectedCharactersData.characters?.results!!)
+
         val mockResponseBuilder = MockResponse.Builder()
         mockResponseBuilder.body("{\"data\":${expectedCharactersData.toJson()}}")
         mockResponseBuilder.statusCode(200)
@@ -42,7 +44,7 @@ class RickMortyServiceTest
 
         val actualResponse = rickMortyService.getCharacters("")
 
-        assertEquals(expectedCharactersData.characters?.results, actualResponse)
+        assertEquals(expectedResponse, actualResponse)
     }
 
     @After
