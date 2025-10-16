@@ -18,8 +18,8 @@ class CharactersScreenTest {
     {
         val testCharacterData = CharacterData.Success(
             listOf(
-                Character("mom", "wave.png"),
-                Character("dad", "high5.png")
+                Character("mom", "wave.png", "Alive"),
+                Character("dad", "high5.png", "Dead")
             ))
 
 
