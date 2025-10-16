@@ -1,7 +1,5 @@
 package com.example.practice.characters
 
-import android.content.Context
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.practice.repository.CharacterRepository
@@ -13,9 +11,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CharactersViewModel @Inject constructor(private val characterRepository: CharacterRepository, private val context: Context): ViewModel() {
+class CharactersViewModel @Inject constructor(private val characterRepository: CharacterRepository): ViewModel() {
     private val _characterFlow = MutableStateFlow<CharacterData>(CharacterData.Loading)
     val characterFlow = _characterFlow.asStateFlow()
+
+    private val _currentCharacterFlow = MutableStateFlow(Character("", "", ""))
+
+    val currentCharacterFlow = _currentCharacterFlow.asStateFlow()
     
     fun refreshCharacters() = viewModelScope.launch(Dispatchers.IO) {
         _characterFlow.value = characterRepository.getCharacters("")
@@ -25,7 +27,7 @@ class CharactersViewModel @Inject constructor(private val characterRepository: C
     {
         when (userEvent)
         {
-            is CharactersUserEvent.ButtonClick -> Toast.makeText(context, userEvent.characterData.name, Toast.LENGTH_LONG).show()
+            is CharactersUserEvent.ButtonClick -> {_currentCharacterFlow.value = userEvent.characterData}
         }
     }
 }

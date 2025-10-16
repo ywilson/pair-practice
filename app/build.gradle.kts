@@ -9,6 +9,7 @@ plugins {
     id("com.apollographql.apollo") version "4.3.3"
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp") version "2.0.21-1.0.27"
+    kotlin("plugin.serialization") version "2.0.21"
 }
 
 android {
@@ -70,6 +71,7 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.coil.compose)
     ksp(libs.hilt.android.compiler)
+    implementation(libs.androidx.navigation.compose)
 }
 
 apollo {
