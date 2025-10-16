@@ -12,11 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun CharactersScreen(characterData : CharacterData) {
+fun CharactersScreen(characterData : CharacterData, onEvent: (CharactersUserEvent)-> Unit) {
     Scaffold(modifier = Modifier.fillMaxSize()) {  padding ->
         when (characterData)
         {
-            is CharacterData.Success -> CharacterList(characterData.characters, padding)
+            is CharacterData.Success -> CharacterList(characterData.characters, padding, onEvent)
             is CharacterData.Error -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {Text(text = characterData.message)}
             is CharacterData.Loading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center){CircularProgressIndicator()}
         }
@@ -24,12 +24,12 @@ fun CharactersScreen(characterData : CharacterData) {
 }
 
 @Composable
-fun CharacterList(characters: List<Character>, padding: PaddingValues) {
+fun CharacterList(characters: List<Character>, padding: PaddingValues, onEvent: (CharactersUserEvent)-> Unit) {
    LazyColumn(modifier = Modifier.padding(padding)){
         items(characters.chunked(3)) {rowItems->
             Row (modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp), horizontalArrangement = Arrangement.SpaceBetween) {
                 rowItems.forEach {
-                    CharacterCard(it)
+                    CharacterCard(it, onEvent)
                 }
             }
         }

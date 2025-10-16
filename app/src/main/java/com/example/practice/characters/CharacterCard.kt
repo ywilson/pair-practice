@@ -17,8 +17,10 @@ import com.example.practice.R
 
 @Composable
 fun CharacterCard(
-    character: Character) {
-    Card (modifier = Modifier.width(130.dp).fillMaxHeight()) {
+    character: Character,
+    onEvent: (CharactersUserEvent) -> Unit
+    ) {
+    Card (modifier = Modifier.width(130.dp).fillMaxHeight(), onClick = {onEvent(CharactersUserEvent.ButtonClick(character))}) {
         Column (modifier = Modifier.padding(5.dp), horizontalAlignment = Alignment.CenterHorizontally){
             Text(modifier = Modifier.widthIn(max = 120.dp).height(22.dp), text = character.name, overflow = TextOverflow.Ellipsis)
             AsyncImage(
@@ -37,5 +39,5 @@ fun CharacterCard(
 @Preview
 @Composable
 fun CharacterCardPreview(){
-    CharacterCard(Character("suuuupeerrrrr longggggg azzzzzzz nammmmmeeeeees", "http://dog.img", "dead"))
+    CharacterCard(Character("suuuupeerrrrr longggggg azzzzzzz nammmmmeeeeees", "http://dog.img", "dead"), {})
 }

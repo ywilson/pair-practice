@@ -20,8 +20,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val characterData = charactersViewModel.characterFlow.collectAsState()
+
             PracticeTheme(darkTheme = true) {
-                CharactersScreen(characterData.value)
+                CharactersScreen(characterData.value, onEvent = {charactersViewModel.handleUserEvent(it)})
             }
         }
 
