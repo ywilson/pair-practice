@@ -1,8 +1,10 @@
 package com.example.practice
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.unit.dp
 import com.example.practice.characters.Character
 import com.example.practice.characters.CharacterData
 import com.example.practice.characters.CharactersScreen
@@ -24,7 +26,10 @@ class CharactersScreenTest {
 
 
         composeTestRule.setContent {
-            CharactersScreen(testCharacterData)
+            CharactersScreen(
+                testCharacterData, {},
+                padding = PaddingValues(5.dp)
+            )
         }
 
         testCharacterData.characters.forEach {
@@ -39,7 +44,7 @@ class CharactersScreenTest {
         val errorCharacterData = CharacterData.Error("Unknown error occurred")
 
         composeTestRule.setContent {
-            CharactersScreen(errorCharacterData)
+            CharactersScreen(errorCharacterData, {},  padding = PaddingValues(5.dp))
         }
 
         composeTestRule

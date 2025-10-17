@@ -28,7 +28,7 @@ class CharacterCardTest {
 
         composeTestRule.setContent {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CharacterCard(testCharacter)
+                    CharacterCard(testCharacter, {})
                 }
         }
 
