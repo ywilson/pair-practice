@@ -4,10 +4,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import com.example.practice.characters.Character
 import com.example.practice.characters.CharacterCard
 import com.example.practice.characters.CharactersUserEvent
@@ -53,6 +55,8 @@ class CharacterCardTest {
                 CharacterCard(testCharacter, onEvent)
             }
         }
+
+        composeTestRule.onNodeWithText(testCharacter.name).performClick()
 
         verify(onEvent, times(1)).invoke(CharactersUserEvent.ButtonClick(testCharacter))
     }
