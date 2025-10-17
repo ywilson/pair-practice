@@ -11,6 +11,12 @@
       <SelectionState runConfigName="CharacterCardTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
+      <SelectionState runConfigName="CharactersScreenTest">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="whenGivenCharacter_andCardClicked_thenPassCharacterThroughEvent()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
     </selectionStates>
   </component>
 </project>

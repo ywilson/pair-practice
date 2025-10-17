@@ -13,6 +13,7 @@ kotlinxCoroutinesTest = "1.10.2"
 lifecycleRuntimeKtx = "2.6.1"
 activityCompose = "1.8.0"
 composeBom = "2024.09.00"
+mockitoAndroid = "5.20.0"
 mockitoInline = "5.2.0"
 mockitoKotlin = "6.1.0"
 navigationCompose = "2.9.5"
@@ -41,6 +42,7 @@ androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+mockito-android = { module = "org.mockito:mockito-android", version.ref = "mockitoAndroid" }
 mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "mockitoInline" }
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
 
