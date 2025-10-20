@@ -23,11 +23,8 @@ class CharactersViewModelTest {
     @InjectMocks
     lateinit var charactersViewModel: CharactersViewModel
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun `when refreshCharacters called, then pull characters from repo and inform view`() =
-     runTest {
-        val testCharactersData = CharacterData.Success(listOf(
+    val testCharactersData = CharacterData.Success(
+        listOf(
             Character(
                 name = "mom",
                 image = "wave.png",
@@ -38,7 +35,7 @@ class CharactersViewModelTest {
                 name = "test",
                 image = "wave3.png",
                 status = "Alive",
-                gender = "Male"
+                gender = "Female"
             ),
             Character(
                 name = "dad",
@@ -46,17 +43,47 @@ class CharactersViewModelTest {
                 status = "Dead",
                 gender = "Male"
             )
-        ))
-        whenever(mockCharactersRepository.getCharacters("")).thenReturn(testCharactersData)
+        )
+    )
 
-        charactersViewModel.refreshCharacters()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `when refreshCharacters called, then pull characters from repo and inform view`() =
+        runTest {
+            whenever(mockCharactersRepository.getCharacters("")).thenReturn(testCharactersData)
 
-        verify(mockCharactersRepository).getCharacters("")
+            charactersViewModel.refreshCharacters()
 
-        val job = launch (UnconfinedTestDispatcher(testScheduler)){charactersViewModel.characterFlow.collect {
-            assertEquals(testCharactersData, it)
-        }}
+            verify(mockCharactersRepository).getCharacters("")
 
-         job.cancel()
-    }
+            val job = launch(UnconfinedTestDispatcher(testScheduler)) {
+                charactersViewModel.characterFlow.collect {
+                    assertEquals(testCharactersData, it)
+                }
+            }
+
+            job.cancel()
+        }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `when filterCharacters called with filters, then filter the displayed characters`() =
+        runTest {
+            val testFilter = CharacterFilterType.Gender(female = true)
+            val filteredData = listOf(testCharactersData.characters[1])
+
+            whenever(mockCharactersRepository.getCharacters("")).thenReturn(testCharactersData)
+
+            charactersViewModel.filterCharacters(listOf(testFilter))
+
+            verify(mockCharactersRepository).getCharacters("")
+
+            val job = launch(UnconfinedTestDispatcher(testScheduler)) {
+                charactersViewModel.characterFlow.collect {
+                    assertEquals(CharacterData.Success(filteredData), it)
+                }
+            }
+
+            job.cancel()
+        }
 }
