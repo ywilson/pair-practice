@@ -17,10 +17,10 @@ fun CharacterFilterForm(filterTypes: Map<String,CharacterFilterType>, onFilterCh
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text("Male")
                         Checkbox(checked = filterType.male, onCheckedChange = {
-                            onFilterChange(filterType.copy(male = !filterType.male)) })
+                            onFilterChange(CharacterFilterType.Gender(male = !filterType.male)) })
                         Text("Female")
                         Checkbox(filterType.female, {
-                            onFilterChange(filterType.copy(female = !filterType.female))})
+                            onFilterChange(CharacterFilterType.Gender(female = !filterType.female))})
                     }
                 }
 
@@ -29,16 +29,17 @@ fun CharacterFilterForm(filterTypes: Map<String,CharacterFilterType>, onFilterCh
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text("Alive")
                         Checkbox(filterType.alive, {
-                            onFilterChange( filterType.copy(alive = !filterType.alive))})
+                            onFilterChange( CharacterFilterType.Status(alive = !filterType.alive))})
                         Text("Dead")
                         Checkbox(filterType.dead, {
-                            onFilterChange(filterType.copy(dead = !filterType.dead))})
+                            onFilterChange(CharacterFilterType.Status(dead = !filterType.dead))})
                         Text("Unknown")
                         Checkbox(filterType.unknown, {
-                            onFilterChange( filterType.copy(unknown = !filterType.unknown))})
+                            onFilterChange( CharacterFilterType.Status(unknown = !filterType.unknown))})
                     }
 
                 }
+                else -> {}
             }
         }
     }

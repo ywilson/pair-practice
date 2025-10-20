@@ -1,5 +1,5 @@
-query CharacterQuery($search: String!){
-    characters(filter: { name: $search }) {
+query CharacterQuery($searchName: String!, $searchGender: String!, $searchStatus: String!){
+    characters(filter: { name: $searchName,  status: $searchStatus, gender: $searchGender}) {
         results {
             name
             image

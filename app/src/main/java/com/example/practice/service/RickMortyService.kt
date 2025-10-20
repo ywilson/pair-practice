@@ -19,8 +19,8 @@ class RickMortyService  {
         apolloClient = ApolloClient.Builder().serverUrl(serverUrl).build()
     }
 
-    suspend fun getCharacters(nameSearch: String) : RickMortyQLResponse {
-        val response = apolloClient.query(CharacterQuery(nameSearch)).execute()
+    suspend fun getCharacters(nameSearch: String = "", genderSearch: String = "", statusSearch: String = "") : RickMortyQLResponse {
+        val response = apolloClient.query(CharacterQuery(nameSearch, genderSearch, statusSearch)).execute()
 
         if (response.exception != null)
             return RickMortyQLResponse.Error("Unknown error occurred")

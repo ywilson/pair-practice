@@ -7,10 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
@@ -18,6 +15,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -27,10 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.practice.characters.Character
-import com.example.practice.characters.CharactersScreen
-import com.example.practice.characters.CharactersUserEvent
-import com.example.practice.characters.CharactersViewModel
+import com.example.practice.characters.*
 import com.example.practice.ui.theme.PracticeTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.serialization.Serializable
@@ -61,14 +56,12 @@ class MainActivity : ComponentActivity() {
             PracticeTheme(darkTheme = true) {
                 Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
                     TopAppBar(title = {
-                        if (currentCharacter.value.name != "")
-                            Text(text = currentCharacter.value.name)
-                        else
+                        if (currentCharacter.value.name == "")
                             BasicTextField(
                                 value = searchText,
                                 onValueChange = {
                                     searchText = it
-                                    charactersViewModel.filterCharactersByName(it)
+                                    charactersViewModel.filterCharactersByFilterType(CharacterFilterType.Name(it))
                                 },
                                 modifier = Modifier.fillMaxWidth().border(
                                     width = 2.dp,
@@ -94,24 +87,27 @@ class MainActivity : ComponentActivity() {
                                 },
                                 cursorBrush = SolidColor(Color.White)
                             )
-                        if (currentCharacter.value.name != "") {
-                            IconButton(onClick = {
-                                navController.popBackStack()
-                                charactersViewModel.handleUserEvent(
-                                    CharactersUserEvent.ButtonClick(
-                                        Character(
-                                            "",
-                                            "",
-                                            ""
+                        else {
+                            Row (verticalAlignment = Alignment.CenterVertically) {
+                                IconButton(onClick = {
+                                    navController.popBackStack()
+                                    charactersViewModel.handleUserEvent(
+                                        CharactersUserEvent.ButtonClick(
+                                            Character(
+                                                "",
+                                                "",
+                                                ""
+                                            )
                                         )
                                     )
-                                )
-                            }) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                    contentDescription = "back button",
-                                    tint = Color.White
-                                )
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                        contentDescription = "back button",
+                                        tint = Color.White
+                                    )
+                                }
+                                Text(text = currentCharacter.value.name)
                             }
                         }
                     }, actions = {

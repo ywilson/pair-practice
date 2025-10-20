@@ -23,7 +23,8 @@ class CharactersViewModel @Inject constructor(private val characterRepository: C
     private val _filterFlow = MutableStateFlow(
         mapOf(
             Pair(CharacterFilterType.Gender().name, CharacterFilterType.Gender()),
-            Pair(CharacterFilterType.Status().name, CharacterFilterType.Status())
+            Pair(CharacterFilterType.Status().name, CharacterFilterType.Status()),
+            Pair(CharacterFilterType.Name().name, CharacterFilterType.Name())
         )
     )
 
@@ -42,29 +43,47 @@ class CharactersViewModel @Inject constructor(private val characterRepository: C
     }
 
     fun filterCharactersByFilterType(characterFilter: CharacterFilterType) = viewModelScope.launch(Dispatchers.IO) {
-        val characterData = characterRepository.getCharacters("")
-        val characterFilters = _filterFlow.value.toMutableMap()
 
+        val characterFilters = _filterFlow.value.toMutableMap()
         characterFilters[characterFilter.name] = characterFilter
 
-        if (characterData is CharacterData.Success) {
-            val characterList = characterData.characters
-            _characterFlow.value = CharacterData.Success(characterList.filter { character ->
-                characterFilters.values.forEach { filterType ->
-                    if (!filterType.passesFilter(character))
-                        return@filter false
+        var statusFilter = ""
+        var genderFilter = ""
+        var nameFilter = ""
+
+        characterFilters.values.forEach {
+            when (it) {
+                is CharacterFilterType.Gender -> {
+                    genderFilter = it.toFilterString()
                 }
-                return@filter true
-            })
+
+                is CharacterFilterType.Status -> {
+                    statusFilter = it.toFilterString()
+                }
+
+                is CharacterFilterType.Name -> {
+                    nameFilter = it.toFilterString()
+                }
+            }
         }
+
+        _characterFlow.value = characterRepository.getCharacters(nameFilter, genderFilter, statusFilter)
+
+//        val characterData = characterRepository.getCharacters("")
+//        if (characterData is CharacterData.Success) {
+//            val characterList = characterData.characters
+//            _characterFlow.value = CharacterData.Success(characterList.filter { character ->
+//                characterFilters.values.forEach { filterType ->
+//                    if (!filterType.passesFilter(character))
+//                        return@filter false
+//                }
+//                return@filter true
+//            })
+//        }
 
         _filterFlow.value = characterFilters.toMap()
 
         println("Test " + _filterFlow.value)
-    }
-
-    fun filterCharactersByName(name: String) = viewModelScope.launch(Dispatchers.IO) {
-        _characterFlow.value = characterRepository.getCharacters(name)
     }
 }
 
@@ -76,6 +95,8 @@ sealed interface CharacterFilterType {
     val name: String
 
     fun passesFilter(characterToCheck: Character): Boolean
+
+    fun toFilterString(): String
     data class Gender(val male: Boolean = false, val female: Boolean = false) : CharacterFilterType {
         override val name: String
             get() = "Gender"
@@ -90,6 +111,14 @@ sealed interface CharacterFilterType {
             if (female)
                 passes = passes || characterToCheck.gender.lowercase(getDefault()) == "female"
             return passes
+        }
+
+        override fun toFilterString(): String {
+            if (male)
+                return "male"
+            if (female)
+                return "female"
+            return ""
         }
     }
 
@@ -111,5 +140,29 @@ sealed interface CharacterFilterType {
                 passes = passes || characterToCheck.status.lowercase(getDefault()) == "unknown"
             return passes
         }
+
+        override fun toFilterString(): String {
+            if (alive)
+                return "alive"
+            if (dead)
+                return "dead"
+            if (unknown)
+                return "unknown"
+            return ""
+        }
+    }
+
+    data class Name(val searchName: String = "") : CharacterFilterType {
+        override val name: String
+            get() = "Name"
+
+        override fun passesFilter(characterToCheck: Character): Boolean {
+            return true
+        }
+
+        override fun toFilterString(): String {
+            return searchName
+        }
+
     }
 }
