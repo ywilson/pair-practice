@@ -74,7 +74,7 @@ class CharactersViewModelTest {
 
             whenever(mockCharactersRepository.getCharacters("")).thenReturn(testCharactersData)
 
-            charactersViewModel.filterCharacters(listOf(testFilter))
+            charactersViewModel.filterCharacters(testFilter)
 
             verify(mockCharactersRepository).getCharacters("")
 
@@ -88,7 +88,12 @@ class CharactersViewModelTest {
 
             val job2 = launch(UnconfinedTestDispatcher(testScheduler)) {
                 charactersViewModel.filterFlow.collect {
-                    assertEquals(listOf(testFilter), it)
+                    assertEquals(
+                        mapOf(
+                            Pair("Gender", testFilter),
+                            Pair("Status", CharacterFilterType.Status())
+                        ), it
+                    )
                 }
             }
 

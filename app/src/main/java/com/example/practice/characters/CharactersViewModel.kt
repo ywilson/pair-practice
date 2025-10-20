@@ -13,7 +13,7 @@ import java.util.Locale.getDefault
 import javax.inject.Inject
 
 @HiltViewModel
-class CharactersViewModel @Inject constructor(private val characterRepository: CharacterRepository): ViewModel() {
+class CharactersViewModel @Inject constructor(private val characterRepository: CharacterRepository) : ViewModel() {
     private val _characterFlow = MutableStateFlow<CharacterData>(CharacterData.Loading)
     val characterFlow = _characterFlow.asStateFlow()
 
@@ -21,65 +21,94 @@ class CharactersViewModel @Inject constructor(private val characterRepository: C
 
     val currentCharacterFlow = _currentCharacterFlow.asStateFlow()
 
-    private val _filterFlow = MutableStateFlow(listOf<CharacterFilterType>())
+    private val _filterFlow = MutableStateFlow(
+        mapOf(
+            Pair(CharacterFilterType.Gender().name, CharacterFilterType.Gender()),
+            Pair(CharacterFilterType.Status().name, CharacterFilterType.Status())
+        )
+    )
 
     val filterFlow = _filterFlow.asStateFlow()
-    
+
     fun refreshCharacters() = viewModelScope.launch(Dispatchers.IO) {
         _characterFlow.value = characterRepository.getCharacters("")
     }
 
-    fun handleUserEvent(userEvent: CharactersUserEvent)
-    {
-        when (userEvent)
-        {
-            is CharactersUserEvent.ButtonClick -> {_currentCharacterFlow.value = userEvent.characterData}
+    fun handleUserEvent(userEvent: CharactersUserEvent) {
+        when (userEvent) {
+            is CharactersUserEvent.ButtonClick -> {
+                _currentCharacterFlow.value = userEvent.characterData
+            }
         }
     }
 
-    fun filterCharacters(characterFilters : List<CharacterFilterType>) = viewModelScope.launch(Dispatchers.IO){
+    fun filterCharacters(characterFilter: CharacterFilterType) = viewModelScope.launch(Dispatchers.IO) {
         val characterData = characterRepository.getCharacters("")
-        if (characterData is CharacterData.Success)
-        {
+        val characterFilters = _filterFlow.value.toMutableMap()
+
+        characterFilters[characterFilter.name] = characterFilter
+
+        if (characterData is CharacterData.Success) {
             val characterList = characterData.characters
             _characterFlow.value = CharacterData.Success(characterList.filter { character ->
-                var filteredOut = false
-                characterFilters.forEach { filterType ->
-                    when (filterType)
-                    {
-                        is CharacterFilterType.Gender -> {
-                            val gender = character.gender.lowercase(getDefault())
-                            if (filterType.male)
-                                filteredOut = gender != "male"
-                            if (filterType.female)
-                                filteredOut = gender != "female"
-                        }
-                        is CharacterFilterType.Status -> {
-                            val status = character.status.lowercase(getDefault())
-                            if (filterType.alive)
-                                filteredOut = status != "alive"
-                            if (filterType.dead)
-                                filteredOut = status != "dead"
-                            if (filterType.unknown)
-                                filteredOut = status != "unknown"
-                        }
-                    }
+                characterFilters.values.forEach { filterType ->
+                    if (!filterType.passesFilter(character))
+                        return@filter false
                 }
-                return@filter !filteredOut
+                return@filter true
             })
         }
 
-        _filterFlow.value = characterFilters
+        _filterFlow.value = characterFilters.toMap()
+
+        println("Test " + _filterFlow.value)
     }
 }
 
-sealed interface CharactersUserEvent
-{
+sealed interface CharactersUserEvent {
     data class ButtonClick(val characterData: Character) : CharactersUserEvent
 }
 
-sealed interface CharacterFilterType
-{
-    data class Gender(val male : Boolean = false, val female : Boolean = false) : CharacterFilterType
-    data class Status(val alive : Boolean = false, val dead : Boolean = false, val unknown : Boolean = false) : CharacterFilterType
+sealed interface CharacterFilterType {
+    val name : String
+
+    fun passesFilter(characterToCheck: Character) : Boolean
+    data class Gender(val male: Boolean = false, val female: Boolean = false) : CharacterFilterType
+    {
+        override val name: String
+            get() = "Gender"
+
+        override fun passesFilter(characterToCheck: Character): Boolean {
+            var passes = false
+            if (!male && !female)
+                passes = true
+
+            if (male)
+                passes = characterToCheck.gender.lowercase(getDefault()) == "male"
+            if (female)
+                passes = passes || characterToCheck.gender.lowercase(getDefault()) == "female"
+            return passes
+        }
+    }
+
+    data class Status(val alive: Boolean = false, val dead: Boolean = false, val unknown: Boolean = false) :
+        CharacterFilterType
+    {
+        override val name: String
+            get() = "Status"
+
+        override fun passesFilter(characterToCheck: Character): Boolean {
+            var passes = false
+            if (!alive && !dead && !unknown)
+                passes = true
+
+            if (alive)
+                passes = characterToCheck.status.lowercase(getDefault()) == "alive"
+            if (dead)
+                passes = passes || characterToCheck.status.lowercase(getDefault()) == "dead"
+            if (unknown)
+                passes = passes || characterToCheck.status.lowercase(getDefault()) == "unknown"
+            return passes
+        }
+    }
 }

@@ -47,6 +47,7 @@ class MainActivity : ComponentActivity() {
             val currentCharacter = charactersViewModel.currentCharacterFlow.collectAsState()
             val navController = rememberNavController()
             var sheetModelVisibilityState by remember { mutableStateOf(false) }
+            val filterTypes = charactersViewModel.filterFlow.collectAsState()
 
             PracticeTheme(darkTheme = true) {
                 Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
@@ -72,14 +73,15 @@ class MainActivity : ComponentActivity() {
                                     tint = Color.White
                                 )
                             }
-                        }}, actions = {
-                            IconButton(onClick = {sheetModelVisibilityState = !sheetModelVisibilityState}) {
-                                Icon(
-                                    imageVector = Icons.Default.MoreVert,
-                                    contentDescription = "filter button",
-                                    tint = Color.White
-                                )
-                            }
+                        }
+                    }, actions = {
+                        IconButton(onClick = { sheetModelVisibilityState = !sheetModelVisibilityState }) {
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = "filter button",
+                                tint = Color.White
+                            )
+                        }
                     })
                 }
                 ) { padding ->
@@ -93,7 +95,9 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate(CharacterDetails)
                                 },
                                 padding,
-                                Pair(sheetModelVisibilityState) { sheetModelVisibilityState = it }
+                                Pair(sheetModelVisibilityState) { sheetModelVisibilityState = it },
+                                filterTypes.value,
+                                { charactersViewModel.filterCharacters(it) }
                             )
                         }
                         composable<CharacterDetails> { Text("hello") }

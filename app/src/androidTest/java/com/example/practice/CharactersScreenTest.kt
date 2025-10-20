@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.example.practice.characters.Character
 import com.example.practice.characters.CharacterCard
 import com.example.practice.characters.CharacterData
+import com.example.practice.characters.CharacterFilterType
 import com.example.practice.characters.CharactersScreen
 import com.example.practice.characters.CharactersUserEvent
 import org.junit.Rule
@@ -38,7 +39,8 @@ class CharactersScreenTest {
         composeTestRule.setContent {
             CharactersScreen(
                 testCharacterData, {},
-                padding = PaddingValues(5.dp)
+                padding = PaddingValues(5.dp),
+                filterTypes = emptyList()
             )
         }
 
@@ -54,7 +56,7 @@ class CharactersScreenTest {
         val errorCharacterData = CharacterData.Error("Unknown error occurred")
 
         composeTestRule.setContent {
-            CharactersScreen(errorCharacterData, {},  padding = PaddingValues(5.dp))
+            CharactersScreen(errorCharacterData, {},  padding = PaddingValues(5.dp), filterTypes = emptyList())
         }
 
         composeTestRule
@@ -76,7 +78,8 @@ class CharactersScreenTest {
         composeTestRule.setContent {
             CharactersScreen(
                 testCharacterData, onEvent,
-                padding = PaddingValues(5.dp)
+                padding = PaddingValues(5.dp),
+                filterTypes = emptyList()
             )
         }
 

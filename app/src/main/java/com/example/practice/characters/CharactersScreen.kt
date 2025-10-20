@@ -18,7 +18,9 @@ fun CharactersScreen(
     characterData: CharacterData,
     onEvent: (CharactersUserEvent) -> Unit,
     padding: PaddingValues,
-    sheetModalVisibility: Pair<Boolean, (Boolean)-> Unit> = Pair(false) {}
+    sheetModalVisibility: Pair<Boolean, (Boolean)-> Unit> = Pair(false) {},
+    filterTypes : Map<String, CharacterFilterType>,
+    onFilterChange : (CharacterFilterType) -> Unit = {}
 ) {
 
     when (characterData) {
@@ -31,7 +33,7 @@ fun CharactersScreen(
                         sheetModalVisibility.second(false)
                     }
                 ) {
-                    Text("your moma")
+                    CharacterFilterForm(filterTypes, onFilterChange)
                 }
             }
         }

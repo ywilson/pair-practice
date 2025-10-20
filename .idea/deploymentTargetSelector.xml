@@ -13,10 +13,7 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="Tests in 'com.example.practice'">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="All Tests">
+      <SelectionState runConfigName="whenGivenFilters_thenDisplayFilters()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
