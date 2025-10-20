@@ -93,7 +93,7 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate(CharacterDetails)
                                 },
                                 padding,
-                                Pair(sheetModelVisibilityState, {sheetModelVisibilityState=it})
+                                Pair(sheetModelVisibilityState) { sheetModelVisibilityState = it }
                             )
                         }
                         composable<CharacterDetails> { Text("hello") }
