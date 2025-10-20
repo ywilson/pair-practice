@@ -74,7 +74,7 @@ class CharactersViewModelTest {
 
             whenever(mockCharactersRepository.getCharacters("")).thenReturn(testCharactersData)
 
-            charactersViewModel.filterCharacters(testFilter)
+            charactersViewModel.filterCharactersByFilterType(testFilter)
 
             verify(mockCharactersRepository).getCharacters("")
 

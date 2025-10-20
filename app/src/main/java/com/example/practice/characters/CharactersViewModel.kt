@@ -8,7 +8,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.util.Locale
 import java.util.Locale.getDefault
 import javax.inject.Inject
 
@@ -42,7 +41,7 @@ class CharactersViewModel @Inject constructor(private val characterRepository: C
         }
     }
 
-    fun filterCharacters(characterFilter: CharacterFilterType) = viewModelScope.launch(Dispatchers.IO) {
+    fun filterCharactersByFilterType(characterFilter: CharacterFilterType) = viewModelScope.launch(Dispatchers.IO) {
         val characterData = characterRepository.getCharacters("")
         val characterFilters = _filterFlow.value.toMutableMap()
 
@@ -63,6 +62,10 @@ class CharactersViewModel @Inject constructor(private val characterRepository: C
 
         println("Test " + _filterFlow.value)
     }
+
+    fun filterCharactersByName(name: String) = viewModelScope.launch(Dispatchers.IO) {
+        _characterFlow.value = characterRepository.getCharacters(name)
+    }
 }
 
 sealed interface CharactersUserEvent {
@@ -70,11 +73,10 @@ sealed interface CharactersUserEvent {
 }
 
 sealed interface CharacterFilterType {
-    val name : String
+    val name: String
 
-    fun passesFilter(characterToCheck: Character) : Boolean
-    data class Gender(val male: Boolean = false, val female: Boolean = false) : CharacterFilterType
-    {
+    fun passesFilter(characterToCheck: Character): Boolean
+    data class Gender(val male: Boolean = false, val female: Boolean = false) : CharacterFilterType {
         override val name: String
             get() = "Gender"
 
@@ -92,8 +94,7 @@ sealed interface CharacterFilterType {
     }
 
     data class Status(val alive: Boolean = false, val dead: Boolean = false, val unknown: Boolean = false) :
-        CharacterFilterType
-    {
+        CharacterFilterType {
         override val name: String
             get() = "Status"
 

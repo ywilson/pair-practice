@@ -5,18 +5,25 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.border
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -48,12 +55,45 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             var sheetModelVisibilityState by remember { mutableStateOf(false) }
             val filterTypes = charactersViewModel.filterFlow.collectAsState()
+            var searchText by remember { mutableStateOf("") }
+            val searchBoxInteractionSource = remember { MutableInteractionSource() }
 
             PracticeTheme(darkTheme = true) {
                 Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
                     TopAppBar(title = {
-                        Text(text = currentCharacter.value.name)
-                    }, navigationIcon = {
+                        if (currentCharacter.value.name != "")
+                            Text(text = currentCharacter.value.name)
+                        else
+                            BasicTextField(
+                                value = searchText,
+                                onValueChange = {
+                                    searchText = it
+                                    charactersViewModel.filterCharactersByName(it)
+                                },
+                                modifier = Modifier.fillMaxWidth().border(
+                                    width = 2.dp,
+                                    color = Color.Gray,
+                                    shape = RoundedCornerShape(8.dp)
+                                ).padding(5.dp),
+                                textStyle = TextStyle.Default.copy(color = Color.White),
+                                singleLine = true,
+                                interactionSource = searchBoxInteractionSource,
+                                decorationBox = @Composable { innerTextField ->
+                                    TextFieldDefaults.DecorationBox(
+                                        value = searchText,
+                                        innerTextField = innerTextField,
+                                        enabled = true,
+                                        singleLine = true,
+                                        visualTransformation = VisualTransformation.None,
+                                        interactionSource = searchBoxInteractionSource,
+                                        placeholder = {
+                                            Text("Search Character Name")
+                                        },
+                                        contentPadding = PaddingValues(2.dp)
+                                    )
+                                },
+                                cursorBrush = SolidColor(Color.White)
+                            )
                         if (currentCharacter.value.name != "") {
                             IconButton(onClick = {
                                 navController.popBackStack()
@@ -97,7 +137,7 @@ class MainActivity : ComponentActivity() {
                                 padding,
                                 Pair(sheetModelVisibilityState) { sheetModelVisibilityState = it },
                                 filterTypes.value,
-                                { charactersViewModel.filterCharacters(it) }
+                                { charactersViewModel.filterCharactersByFilterType(it) }
                             )
                         }
                         composable<CharacterDetails> { Text("hello") }

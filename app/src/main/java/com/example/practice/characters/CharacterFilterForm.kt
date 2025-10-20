@@ -3,11 +3,9 @@ package com.example.practice.characters
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
 
 @Composable
 fun CharacterFilterForm(filterTypes: Map<String,CharacterFilterType>, onFilterChange : (CharacterFilterType) -> Unit = {}) {
