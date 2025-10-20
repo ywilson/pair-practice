@@ -26,7 +26,5 @@ class CharacterFilterFormTest {
                 CharacterFilterForm(testFilters)
             }
         }
-
-        Thread.sleep(10000)
     }
 }
