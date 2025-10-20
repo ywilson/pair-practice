@@ -85,5 +85,13 @@ class CharactersViewModelTest {
             }
 
             job.cancel()
+
+            val job2 = launch(UnconfinedTestDispatcher(testScheduler)) {
+                charactersViewModel.filterFlow.collect {
+                    assertEquals(listOf(testFilter), it)
+                }
+            }
+
+            job2.cancel()
         }
 }

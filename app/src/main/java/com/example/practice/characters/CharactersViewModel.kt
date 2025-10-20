@@ -68,6 +68,8 @@ class CharactersViewModel @Inject constructor(private val characterRepository: C
                 return@filter !filteredOut
             })
         }
+
+        _filterFlow.value = characterFilters
     }
 }
 

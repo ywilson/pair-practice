@@ -13,9 +13,6 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="whenGivenCharacter_andCardClicked_thenPassCharacterThroughEvent() (1)">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="Tests in 'com.example.practice'">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
