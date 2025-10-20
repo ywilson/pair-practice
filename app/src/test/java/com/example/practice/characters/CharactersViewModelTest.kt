@@ -31,17 +31,20 @@ class CharactersViewModelTest {
             Character(
                 name = "mom",
                 image = "wave.png",
-                status = "Alive"
+                status = "Alive",
+                gender = "Male"
             ),
             Character(
                 name = "test",
                 image = "wave3.png",
-                status = "Alive"
+                status = "Alive",
+                gender = "Male"
             ),
             Character(
                 name = "dad",
                 image = "clap.png",
-                status = "Dead"
+                status = "Dead",
+                gender = "Male"
             )
         ))
         whenever(mockCharactersRepository.getCharacters("")).thenReturn(testCharactersData)

@@ -4,6 +4,7 @@ query CharacterQuery($search: String!){
             name
             image
             status
+            gender
         }
     }
 }

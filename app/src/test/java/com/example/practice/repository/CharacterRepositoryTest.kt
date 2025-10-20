@@ -34,16 +34,19 @@ class CharacterRepositoryTest {
                         name = "mom"
                         image = "wave.png"
                         status = "Alive"
+                        gender = "Male"
                     },
                     buildCharacter {
                         name = "test"
                         image = "wave3.png"
                         status = "Alive"
+                        gender = "Male"
                     },
                     buildCharacter {
                         name = "dad"
                         image = "clap.png"
                         status = "Dead"
+                        gender = "Male"
                     }
                 )
             }
@@ -53,17 +56,20 @@ class CharacterRepositoryTest {
             Character(
                 name = "mom",
                 image = "wave.png",
-                status = "Alive"
+                status = "Alive",
+                gender = "Male"
             ),
             Character(
                 name = "test",
                 image = "wave3.png",
-                status = "Alive"
+                status = "Alive",
+                gender = "Male"
             ),
             Character(
                 name = "dad",
                 image = "clap.png",
-                status = "Dead"
+                status = "Dead",
+                gender = "Male"
             )
         ))
 
