@@ -73,6 +73,8 @@ dependencies {
     implementation(libs.coil.compose)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.navigation.compose)
+    implementation("androidx.paging:paging-runtime-ktx:3.2.1")
+    implementation("androidx.paging:paging-compose:1.0.0-alpha20")
 }
 
 apollo {

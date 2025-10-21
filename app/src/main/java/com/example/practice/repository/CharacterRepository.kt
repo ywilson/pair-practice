@@ -9,14 +9,14 @@ import javax.inject.Singleton
 
 @Singleton
 interface CharacterRepository {
-    suspend fun getCharacters(nameFilter: String = "", genderFilter: String = "", statusFilter: String = ""): CharacterData
+    suspend fun getCharacters(nameFilter: String = "", genderFilter: String = "", statusFilter: String = "", currentPage : Int = 1): CharacterData
 }
 
 
 class CharacterRepositoryImpl @Inject constructor(private val rickMortyService: RickMortyService) :
     CharacterRepository {
-    override suspend fun getCharacters(nameFilter: String, genderFilter: String, statusFilter: String): CharacterData {
-        return when (val response = rickMortyService.getCharacters(nameFilter, genderFilter, statusFilter)) {
+    override suspend fun getCharacters(nameFilter: String, genderFilter: String, statusFilter: String, currentPage : Int): CharacterData {
+        return when (val response = rickMortyService.getCharacters(nameFilter, genderFilter, statusFilter, currentPage)) {
             is RickMortyQLResponse.Success -> CharacterData.Success(response.characters.map {
                 it?.toCharacter() ?: Character()
             })
