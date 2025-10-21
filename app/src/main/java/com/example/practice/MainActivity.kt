@@ -22,6 +22,8 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -49,7 +51,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val characterData = charactersViewModel.characterFlow.collectAsState()
             val currentCharacter = charactersViewModel.currentCharacterFlow.collectAsState()
             val navController = rememberNavController()
             var sheetModelVisibilityState by remember { mutableStateOf(false) }
@@ -57,6 +58,11 @@ class MainActivity : ComponentActivity() {
             var searchText by remember { mutableStateOf("") }
             val searchBoxInteractionSource = remember { MutableInteractionSource() }
             val charactersPaged = charactersViewModel.characterItems.collectAsLazyPagingItems()
+
+            LifecycleEventEffect(Lifecycle.Event.ON_RESUME)
+            {
+                charactersPaged.refresh()
+            }
 
             PracticeTheme(darkTheme = true) {
                 Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
@@ -93,20 +99,21 @@ class MainActivity : ComponentActivity() {
                                 cursorBrush = SolidColor(Color.White)
                             )
                         else {
-                            Row (verticalAlignment = Alignment.CenterVertically) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
                                 IconButton(onClick = {
                                     navController.popBackStack()
                                     lifecycleScope.launch {
                                         delay(200)
                                         charactersViewModel.handleUserEvent(
-                                        CharactersUserEvent.ButtonClick(
-                                            Character(
-                                                "",
-                                                "",
-                                                ""
+                                            CharactersUserEvent.ButtonClick(
+                                                Character(
+                                                    "",
+                                                    "",
+                                                    ""
+                                                )
                                             )
                                         )
-                                    ) }
+                                    }
                                 }) {
                                     Icon(
                                         imageVector = Icons.AutoMirrored.Default.ArrowBack,
@@ -148,7 +155,5 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
-        charactersViewModel.refreshCharacters()
     }
 }

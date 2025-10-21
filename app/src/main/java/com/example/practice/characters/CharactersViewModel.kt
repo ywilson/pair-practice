@@ -10,18 +10,20 @@ import com.example.practice.pagination.RickMortyPagingSource
 import com.example.practice.repository.CharacterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.Locale.getDefault
 import javax.inject.Inject
 
 @HiltViewModel
 class CharactersViewModel @Inject constructor(private val characterRepository: CharacterRepository) : ViewModel() {
-    private val _characterFlow = MutableStateFlow<CharacterData>(CharacterData.Loading)
-    val characterFlow = _characterFlow.asStateFlow()
-
     private val _currentCharacterFlow = MutableStateFlow(Character("", "", ""))
 
     val currentCharacterFlow = _currentCharacterFlow.asStateFlow()
@@ -34,15 +36,13 @@ class CharactersViewModel @Inject constructor(private val characterRepository: C
         )
     )
 
-    var characterItems : Flow<PagingData<Character>> = Pager(PagingConfig(pageSize = 20)){
-        RickMortyPagingSource(characterRepository)
-    }.flow.cachedIn(viewModelScope)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val characterItems : Flow<PagingData<Character>> = _filterFlow
+        .flatMapLatest { value ->
+            paginateCharactersByFilter(value)
+        }.cachedIn(viewModelScope)
 
     val filterFlow = _filterFlow.asStateFlow()
-
-    fun refreshCharacters() = viewModelScope.launch(Dispatchers.IO) {
-        _characterFlow.value = characterRepository.getCharacters("")
-    }
 
     fun handleUserEvent(userEvent: CharactersUserEvent) {
         when (userEvent) {
@@ -52,16 +52,21 @@ class CharactersViewModel @Inject constructor(private val characterRepository: C
         }
     }
 
-    fun filterCharactersByFilterType(characterFilter: CharacterFilterType) = viewModelScope.launch(Dispatchers.IO) {
+    fun refreshCharacters() = viewModelScope.launch { _filterFlow.emit(_filterFlow.value)}
 
+    fun filterCharactersByFilterType(characterFilter: CharacterFilterType) = viewModelScope.launch(Dispatchers.IO) {
         val characterFilters = _filterFlow.value.toMutableMap()
         characterFilters[characterFilter.name] = characterFilter
+        _filterFlow.value = characterFilters.toMap()
+    }
 
+    fun paginateCharactersByFilter(filters : Map<String, CharacterFilterType>) : Flow<PagingData<Character>>
+    {
         var statusFilter = ""
         var genderFilter = ""
         var nameFilter = ""
 
-        characterFilters.values.forEach {
+        filters.values.forEach {
             when (it) {
                 is CharacterFilterType.Gender -> {
                     genderFilter = it.toFilterString()
@@ -77,11 +82,9 @@ class CharactersViewModel @Inject constructor(private val characterRepository: C
             }
         }
 
-        _characterFlow.value = characterRepository.getCharacters(nameFilter, genderFilter, statusFilter)
-
-        _filterFlow.value = characterFilters.toMap()
-
-        println("Test " + _filterFlow.value)
+        return Pager(PagingConfig(pageSize = 20)){
+            RickMortyPagingSource(characterRepository, nameFilter, genderFilter, statusFilter)
+        }.flow
     }
 }
 

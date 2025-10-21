@@ -24,18 +24,20 @@ class RickMortyPagingSource(
         try {
             val currentPage = params.key ?: 1
             val response = characterRepository.getCharacters(nameFilter, genderFilter, statusFilter, currentPage)
-            if (response is CharacterData.Success) {
-                val items = response.characters
+            when (response)
+            {
+                is CharacterData.Success -> {
+                    val items = response.characters
 
-                return LoadResult.Page(
-                    data = items,
-                    prevKey = if (currentPage == 1) null else currentPage - 1,
-                    nextKey = if (items.isEmpty()) null else currentPage + 1
-                )
+                    return LoadResult.Page(
+                        data = items,
+                        prevKey = if (currentPage == 1) null else currentPage - 1,
+                        nextKey = if (items.isEmpty()) null else currentPage + 1
+                    )
+                }
+                is CharacterData.Error -> return LoadResult.Error(Throwable(response.message))
+                else -> return LoadResult.Invalid()
             }
-            else
-                return LoadResult.Invalid()
-
         } catch (e: Exception) {
             return LoadResult.Error(e)
         }
