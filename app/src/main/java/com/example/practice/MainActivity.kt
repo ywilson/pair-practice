@@ -22,12 +22,15 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.practice.characters.*
 import com.example.practice.ui.theme.PracticeTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 @AndroidEntryPoint
@@ -91,7 +94,9 @@ class MainActivity : ComponentActivity() {
                             Row (verticalAlignment = Alignment.CenterVertically) {
                                 IconButton(onClick = {
                                     navController.popBackStack()
-                                    charactersViewModel.handleUserEvent(
+                                    lifecycleScope.launch {
+                                        delay(200)
+                                        charactersViewModel.handleUserEvent(
                                         CharactersUserEvent.ButtonClick(
                                             Character(
                                                 "",
@@ -99,7 +104,7 @@ class MainActivity : ComponentActivity() {
                                                 ""
                                             )
                                         )
-                                    )
+                                    ) }
                                 }) {
                                     Icon(
                                         imageVector = Icons.AutoMirrored.Default.ArrowBack,
@@ -136,7 +141,7 @@ class MainActivity : ComponentActivity() {
                                 { charactersViewModel.filterCharactersByFilterType(it) }
                             )
                         }
-                        composable<CharacterDetails> { Text("hello") }
+                        composable<CharacterDetails> { CharacterDetailsCard(currentCharacter.value, padding) }
                     }
                 }
             }
