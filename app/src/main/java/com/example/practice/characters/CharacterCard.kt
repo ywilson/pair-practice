@@ -20,7 +20,7 @@ fun CharacterCard(
     character: Character,
     onEvent: (CharactersUserEvent) -> Unit
     ) {
-    Card (modifier = Modifier.width(130.dp).fillMaxHeight(), onClick = {onEvent(CharactersUserEvent.ButtonClick(character))}) {
+    Card (modifier = Modifier.width(130.dp).fillMaxHeight().padding(5.dp), onClick = {onEvent(CharactersUserEvent.ButtonClick(character))}) {
         Column (modifier = Modifier.padding(5.dp), horizontalAlignment = Alignment.CenterHorizontally){
             Text(modifier = Modifier.widthIn(max = 120.dp).height(22.dp), text = character.name, overflow = TextOverflow.Ellipsis)
             AsyncImage(

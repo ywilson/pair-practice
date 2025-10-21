@@ -2,9 +2,15 @@ package com.example.practice.characters
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.example.practice.pagination.RickMortyPagingSource
 import com.example.practice.repository.CharacterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -27,6 +33,10 @@ class CharactersViewModel @Inject constructor(private val characterRepository: C
             Pair(CharacterFilterType.Name().name, CharacterFilterType.Name())
         )
     )
+
+    var characterItems : Flow<PagingData<Character>> = Pager(PagingConfig(pageSize = 20)){
+        RickMortyPagingSource(characterRepository)
+    }.flow.cachedIn(viewModelScope)
 
     val filterFlow = _filterFlow.asStateFlow()
 
@@ -68,18 +78,6 @@ class CharactersViewModel @Inject constructor(private val characterRepository: C
         }
 
         _characterFlow.value = characterRepository.getCharacters(nameFilter, genderFilter, statusFilter)
-
-//        val characterData = characterRepository.getCharacters("")
-//        if (characterData is CharacterData.Success) {
-//            val characterList = characterData.characters
-//            _characterFlow.value = CharacterData.Success(characterList.filter { character ->
-//                characterFilters.values.forEach { filterType ->
-//                    if (!filterType.passesFilter(character))
-//                        return@filter false
-//                }
-//                return@filter true
-//            })
-//        }
 
         _filterFlow.value = characterFilters.toMap()
 

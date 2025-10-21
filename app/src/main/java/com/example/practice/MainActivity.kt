@@ -26,6 +26,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.practice.characters.*
 import com.example.practice.ui.theme.PracticeTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -55,6 +56,7 @@ class MainActivity : ComponentActivity() {
             val filterTypes = charactersViewModel.filterFlow.collectAsState()
             var searchText by remember { mutableStateOf("") }
             val searchBoxInteractionSource = remember { MutableInteractionSource() }
+            val charactersPaged = charactersViewModel.characterItems.collectAsLazyPagingItems()
 
             PracticeTheme(darkTheme = true) {
                 Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
@@ -130,7 +132,7 @@ class MainActivity : ComponentActivity() {
                     {
                         composable<CharacterList> {
                             CharactersScreen(
-                                characterData.value,
+                                charactersPaged,
                                 onEvent = {
                                     charactersViewModel.handleUserEvent(it)
                                     navController.navigate(CharacterDetails)
