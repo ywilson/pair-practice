@@ -5,6 +5,22 @@ query CharacterQuery($searchName: String!, $searchGender: String!, $searchStatus
             image
             status
             gender
+            species
+            type
+            origin{
+                name
+                type
+                dimension
+            }
+            location {
+                name
+                type
+                dimension
+            }
+            episode {
+                name
+                episode
+            }
         }
     }
 }
